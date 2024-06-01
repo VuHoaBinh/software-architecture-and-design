@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Status Service</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+      body {
+        background-color: #eaf6ff;
+      }
+      .navbar {
+        background-color: #e0f3ff;
+      }
+      .navbar-brand {
+        color: #007bff;
+        font-size: 24px;
+      }
+      .navbar-nav .nav-link {
+        color: #000 !important;
+        font-size: 18px;
+      }
+      .navbar-nav .nav-item.active .nav-link {
+        color: #438ff9 !important;
+        border-bottom: 2px solid #438ff9;
+      }
+      .navbar-nav .nav-link:hover {
+        color: #438ff9 !important;
+        border-bottom-color: #438ff9;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Brand</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html"
+              >Trang chủ <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="status.html">Yêu cầu của tôi</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="quoting.html">Báo giá</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Đăng nhập</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Đăng ký</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <h1 class="text-center">Status Service</h1>
+      <div class="d-flex justify-content-center">
+        <form>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="check"
+              placeholder="Nhập id sản phẩm"
+            />
+            <div class="input-group-append">
+              <button
+                type="button"
+                class="btn btn-success"
+                onclick="checkStatus()"
+              >
+                Check
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-responsive" style="margin-top: 20px">
+        <table id="table" class="table table-hover" style="display: none">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>ID Device</th>
+              <th>Date</th>
+              <th>Price By</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+      function checkStatus() {
+        let check = document.getElementById("check").value;
+        if (check == "") {
+          alert("Please enter id device");
+          tbody.innerHTML = "";
+          alert("Error: " + data.message);
+          return;
+        }
+        fetch(`http://localhost:8082/api/v1/status/check-status?id=${check}`)
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              document.getElementById("table").style.display = "none";
+              tbody.innerHTML = "";
+              alert("Error: " + data.message);
+              return;
+            }
+          })
+          .then((data) => {
+            if (data.length > 0) {
+              document.getElementById("table").style.display = "block";
+              let tbody = document.querySelector("tbody");
+
+              tbody.innerHTML = "";
+              data.forEach((element) => {
+                let tr = document.createElement("tr");
+                let td1 = document.createElement("td");
+                let td2 = document.createElement("td");
+                let td3 = document.createElement("td");
+                let td4 = document.createElement("td");
+                let td5 = document.createElement("td");
+
+                td1.innerHTML = element.id;
+                td2.innerHTML = element.idUser;
+                td3.innerHTML = element.date;
+                td4.innerHTML = element.priceBy;
+                td5.innerHTML = element.status;
+
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+                tr.appendChild(td5);
+
+                tbody.appendChild(tr);
+              });
+            } else {
+              alert("No data found");
+              document.getElementById("table").style.display = "none";
+              tbody.innerHTML = "";
+            }
+          });
+      }
+    </script>
+  </body>
+</html>

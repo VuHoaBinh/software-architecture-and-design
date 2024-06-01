@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Assessment Service</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v6.5.2/css/all.css"
+    />
+  </head>
+  <body>
+    <h1 style="text-align: center">Assessment Service</h1>
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <form>
+        <div style="display: flex; justify-content: center">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Nhập id của thiết bị"
+            id="id"
+          />
+          <button type="button" class="btn btn-success" onclick="search()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <button type="button" class="btn btn-info" onclick="clean()">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+        <table id="table" style="display: none" class="table table-hover">
+          <thead>
+            <tr>
+              <th>Mã ID</th>
+              <th>Hình ảnh</th>
+              <th>Ngày</th>
+            </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+
+        <div style="display: none" id="assessing">
+          <hr />
+          <div style="display: flex; justify-content: center">
+            <button type="button" class="btn btn-info" onclick="assessing()">
+              Assessing
+            </button>
+          </div>
+        </div>
+
+        <div style="display: none" id="passOrFailed">
+          <hr />
+          <div style="display: flex; justify-content: center">
+            <button type="button" class="btn btn-success" onclick="pass()">
+              Nhận sản phẩm
+            </button>
+            <p style="padding: 10px"></p>
+            <button type="button" class="btn btn-danger" onclick="failed()">
+              Không nhận sản phẩm
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <script>
+      function clean() {
+        document.getElementById("id").value = "";
+        document.getElementById("table").style.display = "none";
+        document.getElementById("assessing").style.display = "none";
+        document.getElementById("passOrFailed").style.display = "none";
+      }
+
+      function search() {
+        let id = document.getElementById("id").value;
+        document.getElementById("table").style.display = "none";
+        document.getElementById("assessing").style.display = "none";
+        document.getElementById("passOrFailed").style.display = "none";
+
+        fetch(`http://localhost:8083/api/v1/receiving/search?id=${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => {
+            if (res.status === 200) {
+              return res.json();
+            } else {
+              alert(res.body);
+              document.getElementById("assessing").style.display = "none";
+              document.getElementById("passOrFailed").style.display = "none";
+              return;
+            }
+          })
+          .then((data) => {
+            if (data != null) {
+              document.getElementById("table").style.display = "block";
+              let tbody = document.querySelector("tbody");
+
+              tbody.innerHTML = "";
+              let tr = document.createElement("tr");
+              tr.innerHTML = `
+                        <td>${data.id}</td>
+                        <td><img src=${data.img} style="height: 100px; width: 50px;"></td>
+                        <td>${data.date}</td>
+                    `;
+              tbody.appendChild(tr);
+
+              fetch(`http://localhost:8084/api/v1/assessment/search?id=${id}`, {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+                .then((res1) => {
+                  if (res1.status === 200) {
+                    return res1.json();
+                  } else {
+                    document.getElementById("assessing").style.display =
+                      "block";
+                    document.getElementById("passOrFailed").style.display =
+                      "none";
+                    return;
+                  }
+                })
+                .then((data1) => {
+                  if (data1 != null) {
+                    if (data1.type === "ASSESSING") {
+                      document.getElementById("assessing").style.display =
+                        "none";
+                      document.getElementById("passOrFailed").style.display =
+                        "block";
+                    } else {
+                      document.getElementById("assessing").style.display =
+                        "none";
+                      document.getElementById("passOrFailed").style.display =
+                        "none";
+                    }
+                  }
+                });
+            } else {
+              alert("No data found");
+              document.getElementById("table").style.display = "none";
+              let tbody = document.querySelector("tbody");
+              tbody.innerHTML = "";
+            }
+          });
+      }
+
+      function assessing() {
+        let id = document.getElementById("id").value;
+
+        fetch("http://localhost:8084/api/v1/assessment/create?id=" + id, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((res) => {
+          if (res.status === 200) {
+            alert("Assessing successfully");
+            document.getElementById("assessing").style.display = "none";
+            document.getElementById("passOrFailed").style.display = "block";
+          } else {
+            alert(res.body);
+            document.getElementById("assessing").style.display = "block";
+            document.getElementById("passOrFailed").style.display = "none";
+            return;
+          }
+        });
+      }
+
+      function pass() {
+        let id = document.getElementById("id").value;
+
+        fetch(
+          "http://localhost:8084/api/v1/assessment/change-type?id=" +
+            id +
+            "&type=PASS",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        ).then((res) => {
+          alert("Pass successfully");
+          document.getElementById("assessing").style.display = "none";
+          document.getElementById("passOrFailed").style.display = "none";
+        });
+      }
+      function failed() {
+        let id = document.getElementById("id").value;
+
+        fetch(
+          "http://localhost:8084/api/v1/assessment/change-type?id=" +
+            id +
+            "&type=FAILED",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        ).then((res) => {
+          alert("Failed successfully");
+          document.getElementById("assessing").style.display = "none";
+          document.getElementById("passOrFailed").style.display = "none";
+        });
+      }
+    </script>
+  </body>
+</html>

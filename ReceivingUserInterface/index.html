@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Receiving Service</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <h1 style="text-align: center">Receiving and Assessment Service</h1>
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <button
+        onclick="window.location.href = 'receiving.html';"
+        type="button"
+        class="btn btn-success"
+      >
+        Receiving Service
+      </button>
+      <p style="width: 40px"></p>
+      <button
+        onclick="window.location.href = 'assessment.html';"
+        type="button"
+        class="btn btn-info"
+      >
+        Assessment Service
+      </button>
+    </div>
+
+    <div class="table-responsive" style="margin-top: 20px">
+      <h1>Danh sách thiết bị khách hàng cần thu mua</h1>
+      <table id="table" class="table table-hover" style="display: none">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>ID Device</th>
+            <th>Date</th>
+            <th>Price By</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        fetchAllData();
+      });
+
+      function fetchAllData() {
+        fetch("http://localhost:8082/api/v1/status/all-statuses")
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Network response was not ok.");
+            }
+          })
+          .then((data) => {
+            if (data.length > 0) {
+              document.getElementById("table").style.display = "block";
+              let tbody = document.querySelector("tbody");
+              tbody.innerHTML = "";
+              data.forEach((element) => {
+                let tr = document.createElement("tr");
+                let td1 = document.createElement("td");
+                let td2 = document.createElement("td");
+                let td3 = document.createElement("td");
+                let td4 = document.createElement("td");
+                let td5 = document.createElement("td");
+
+                td1.innerHTML = element.id;
+                td2.innerHTML = element.idUser;
+                td3.innerHTML = element.date;
+                td4.innerHTML = element.priceBy;
+                td5.innerHTML = element.status;
+
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+                tr.appendChild(td5);
+
+                tbody.appendChild(tr);
+              });
+            } else {
+              alert("No data found");
+              document.getElementById("table").style.display = "none";
+            }
+          })
+          .catch((error) => {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+            alert("Error: " + error.message);
+          });
+      }
+    </script>
+  </body>
+</html>

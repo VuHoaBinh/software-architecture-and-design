@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Receiving Service</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <h1 style="text-align: center">Receiving Service</h1>
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <form>
+        <div class="input-group">
+          <span class="input-group-addon">Nhập mã sản phẩm: </span>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="enter id item"
+            id="id"
+            required
+          />
+        </div>
+        <br />
+        <div class="input-group">
+          <span class="input-group-addon">Nhập hình ảnh: </span>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="enter link image item"
+            id="img"
+          />
+        </div>
+        <hr />
+        <div style="display: flex; justify-content: center">
+          <button
+            type="button"
+            class="btn btn-info"
+            onclick="createReceiving()"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+    <script>
+      function createReceiving() {
+        let c = confirm("Are you sure you want to create this receiving?");
+        if (c) {
+          fetch("http://localhost:8083/api/v1/receiving/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: document.getElementById("id").value,
+              img: document.getElementById("img").value,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              alert("Receiving created successfully");
+              document.getElementById("id").value = "";
+              document.getElementById("img").value = "";
+            });
+        }
+      }
+    </script>
+  </body>
+</html>

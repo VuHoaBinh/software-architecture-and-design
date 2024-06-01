@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quoting Service</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+      body {
+        background-color: #eaf6ff;
+      }
+      .navbar {
+        background-color: #e0f3ff;
+      }
+      .navbar-brand {
+        color: #007bff;
+        font-size: 24px;
+      }
+      .navbar-nav .nav-link {
+        color: #000 !important;
+        border-bottom: 2px solid transparent;
+        transition: border-bottom-color 0.3s, color 0.3s;
+        font-size: 18px;
+      }
+      .navbar-nav .nav-item.active .nav-link {
+        color: #438ff9 !important;
+      }
+
+      .navbar-nav .nav-link:hover {
+        color: #438ff9 !important;
+        border-bottom-color: #438ff9;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Brand</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html"
+              >Trang chủ <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="status.html">Yêu cầu của tôi</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="quoting.html">Báo giá</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Đăng nhập</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Đăng ký</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1 style="text-align: center">Quoting Service</h1>
+      <div style="display: flex; justify-content: center">
+        <form style="width: 300px">
+          <div class="form-group">
+            <label for="idUser">Nhập tên sản phẩm:</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Nhập tên sản phẩm"
+              id="idUser"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="category">Loại điện thoại:</label>
+            <select class="form-control" id="category">
+              <option value="IPHONE">IPHONE</option>
+              <option value="ANDROID">ANDROID</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="priceOrigin">Giá:</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Price"
+              id="priceOrigin"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="dateBy">Ngày:</label>
+            <input type="date" class="form-control" id="dateBy" />
+          </div>
+          <div class="form-group">
+            <label for="status">Chất lượng pin:</label>
+            <select class="form-control" id="status">
+              <option value="NEW_95">90% - 100%</option>
+              <option value="NEW_90">85% - 90%</option>
+              <option value="NEW_85">80% - 85%</option>
+              <option value="NEW_80">75% - 80%</option>
+            </select>
+          </div>
+          <div style="text-align: center">
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="checkPrice()"
+            >
+              Check Price
+            </button>
+            <input
+              id="check-price"
+              type="text"
+              class="form-control"
+              style="margin-top: 10px"
+              disabled
+            />
+          </div>
+          <div
+            id="hidden"
+            style="display: none; text-align: center; margin-top: 20px"
+          >
+            <button type="button" class="btn btn-success" onclick="quoting()">
+              Quoting Now
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script>
+      function checkPrice() {
+        fetch("http://localhost:8081/api/v1/quoting/check-price", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idUser: document.getElementById("idUser").value,
+            category: document.getElementById("category").value,
+            priceOrigin: document.getElementById("priceOrigin").value,
+            dateBy: document.getElementById("dateBy").value,
+            status: document.getElementById("status").value,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("hidden").style.display = "block";
+
+            document.getElementById("check-price").value = data.field;
+          })
+          .catch((error) => {
+            console.error(
+              "There has been a problem with your fetch operation:",
+              error
+            );
+          });
+      }
+
+      function quoting() {
+        let c = confirm("Tiếp tục xác nhận sản phẩm");
+
+        if (c == true) {
+          fetch("http://localhost:8081/api/v1/quoting/create", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              idUser: document.getElementById("idUser").value,
+              category: document.getElementById("category").value,
+              priceOrigin: document.getElementById("priceOrigin").value,
+              dateBy: document.getElementById("dateBy").value,
+              status: document.getElementById("status").value,
+            }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(
+                  "Network response was not ok " + response.statusText
+                );
+              }
+              return response.json();
+            })
+            .then((data) => {
+              alert("ID của sản phẩm : ", data.id);
+              console.log(data.id);
+            })
+            .catch((error) => {
+              console.error(
+                "There has been a problem with your fetch operation:",
+                error
+              );
+            });
+        }
+      }
+    </script>
+  </body>
+</html>

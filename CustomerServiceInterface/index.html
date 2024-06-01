@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Webpage</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #eaf6ff;
+      background-image: url('https://thumuanhanh.vn/wp-content/uploads/2021/11/ddd.png'),
+      url('https://thumuanhanh.vn/wp-content/uploads/2023/08/0e294abe-3095-11ee-9b04-ea3d47352033-2048x1365.png');
+      background-size: 40% auto , 75% auto;
+      background-repeat: no-repeat;
+      background-position: center top , right top;
+    }
+    .navbar {
+      background-color: #e0f3ff;
+    }
+    .navbar-brand {
+      color: #007bff;
+      font-size: 24px;
+    }
+    .navbar-nav .nav-link {
+      color: #000 !important;
+      border-bottom: 2px solid transparent;
+      transition: border-bottom-color 0.3s, color 0.3s;
+      font-size: 18px;
+    }
+    .navbar-nav .nav-item.active .nav-link {
+      color: #438ff9 !important;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #438ff9 !important;
+      border-bottom-color: #438ff9;
+    }
+    .container {
+      position: absolute;
+      top: 55%;
+      left: 30%;
+      transform: translate(-70%, -70%);
+      max-width: 600px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Brand</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="index.html">Trang chủ <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="status.html">Yêu cầu của tôi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="quoting.html">Báo giá</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Đăng nhập</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Đăng ký</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+  <h3>THU MUA <span style="color: #ffa03a;">GIÁ TỐT NHẤT SÀI GÒN</span></h3>
+  <h1>Làm Việc 24/7</h1>
+  <p style="color: #555;">Chúng tôi luôn sẵn sàng phục vụ quý khách bất kể ngày đêm, đừng ngại nhấc máy lên gọi ngay cho ThuMuaNhanh.vn</p>
+  <button onclick="window.location.href = 'quoting.html';"
+          type="button"
+          class="btn btn-success"
+          style="background-color: #3bbeff;border: none; border-radius: 50px; padding-left: 20px; padding-right: 20px;font-size: 20px; margin-top: 10px;">
+    Báo giá ngay
+  </button>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
